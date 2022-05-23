@@ -57,6 +57,7 @@ public class Sudoku {
                         }
                     }
                 }
+                printPuzzle();
             }
         }
 
@@ -114,21 +115,40 @@ public class Sudoku {
     }
 
     public boolean checkValidity(int val, int row, int col) {
-        return checkRow(val,row,col) && checkCol(val,row,col) && checkUnit(val,row,col);
+        System.out.println(checkRow(val,row) && checkCol(val,col) && checkUnit(val,row,col));
+        return checkRow(val,row) && checkCol(val,col) && checkUnit(val,row,col);
     }
 
-    public boolean checkRow(int value, int row, int col) {
+    public boolean checkRow(int value, int row) {
         boolean valid = false;
+        int occurences = 0;
+        for (int i = 0; i < 9; i++) {
+            if (value == completePuzzle[row][i]) {
+                occurences++;
+            }
+        }
+        if (occurences <= 1) {
+            valid = true;
+        }
         return valid;
     }
 
-    public boolean checkCol(int value, int row, int col) {
+    public boolean checkCol(int value, int col) {
         boolean valid = false;
+        int occurences = 0;
+        for (int i = 0; i < 9; i++) {
+            if (value == completePuzzle[i][col]) {
+                occurences++;
+            }
+        }
+        if (occurences <= 1) {
+            valid = true;
+        }
         return valid;
     }
 
     public boolean checkUnit(int value, int row, int col) {
-        boolean valid = false;
+        boolean valid = true;
         return valid;
     }
 
@@ -140,5 +160,4 @@ public class Sudoku {
             System.out.println("");
         }
     }
-
 }
