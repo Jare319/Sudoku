@@ -38,28 +38,7 @@ public class Sudoku {
         generateUnitRandom(4);
         generateUnitRandom(8);
 
-        int count = 0;
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                while (!checkValidity(completePuzzle[i][j], i, j)) {
-                    completePuzzle[i][j]++;
-                    if (completePuzzle[i][j] > 9) {
-                        completePuzzle[i][j] = 1;
-                    }
-                    count++;
-                    if (count > 9) {
-                        count = 0;
-                        completePuzzle[i][j] = 0;
-                        j--;
-                        if (j < 0) {
-                            j = 8;
-                            i--;
-                        }
-                    }
-                }
-                printPuzzle();
-            }
-        }
+        solve();
 
         printPuzzle();
     }
@@ -115,7 +94,7 @@ public class Sudoku {
     }
 
     public boolean checkValidity(int val, int row, int col) {
-        System.out.println(checkRow(val,row) && checkCol(val,col) && checkUnit(val,row,col));
+        //System.out.println(checkRow(val,row) && checkCol(val,col) && checkUnit(val,row,col));
         return checkRow(val,row) && checkCol(val,col) && checkUnit(val,row,col);
     }
 
@@ -127,7 +106,7 @@ public class Sudoku {
                 occurences++;
             }
         }
-        if (occurences <= 1) {
+        if (occurences == 0) {
             valid = true;
         }
         return valid;
@@ -141,15 +120,73 @@ public class Sudoku {
                 occurences++;
             }
         }
-        if (occurences <= 1) {
+        if (occurences == 0) {
             valid = true;
         }
         return valid;
     }
 
     public boolean checkUnit(int value, int row, int col) {
-        boolean valid = true;
+        boolean valid = false;
+        int occurences = 0;
+        for (int i = (row/3)*3; i < ((row/3)*3)+3;i++) {
+            for (int j = (col/3)*3; j < ((col/3)*3)+3;j++) {
+                if (value == completePuzzle[i][j]) {
+                    occurences++;
+                }
+            }
+        }
+        if (occurences == 0) {
+            valid = true;
+        }
         return valid;
+    }
+
+    public boolean solve() {
+        int row = -1;
+        int col = -1;
+
+        if (isSolved()) {
+            return true;
+        }
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (completePuzzle[i][j] == 0) {
+                    row = i;
+                    col = j;
+                    break;
+                }
+            }
+            if (row != -1) {
+                break;
+            }
+        }
+
+        for (int i = 1; i <= 9; i++) {
+            if (checkValidity(i, row, col)) {
+                completePuzzle[row][col] = i;
+                if (solve()) {
+                    //printPuzzle();
+                    return true;
+                }
+                else {
+                    completePuzzle[row][col] = 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isSolved() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (completePuzzle[i][j] == 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void printPuzzle() {
