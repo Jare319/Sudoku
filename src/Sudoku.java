@@ -22,25 +22,27 @@ public class Sudoku {
     repeat untill enough values are removed to satisfy the specified difficulty.
 
     To initially generate the full solved puzzle, three diagonal units (0, 4, 8) will be filled with a random value 1-9, as these units are independant
-    of eachother. Then, program will iterate through every index; for each index it will increment it, check to see if the value is valid, and repeat
-    this until either a valid number is achieved, or all 9 possibilities are tried, in which case the program will jump to the previous index and repeat.
+    of eachother. Then, program will iterate through every non-solved index and try to insert numbers 1-9. When one of these is valid, it will recursively
+    find the next unsolved index and repeat. If the current recursion thread dead-ends, it will undo the changes one at a time and try another value. 
     */
     
     private int[][] displayPuzzle = new int[9][9]; //new array to contain the generated, incomplete puzzle.
-    private int[][] completePuzzle = new int[9][9]; //new array to contain the completed puzzle which can be compared aginst when user is solving.
+    //private int[][] completePuzzle = new int[9][9]; //new array to contain the completed puzzle which can be compared aginst when user is solving.
+    private int[][] completePuzzle = {{3,9,5,1,2,4,7,6,8},{6,8,4,3,5,7,2,1,9},{1 2 7 6 8 9 4 3 5},{},{},{},{},{},{}};
+    public int count = 0;
 
     Sudoku() {
         generatePuzzle();
     }
 
     public void generatePuzzle() {
-        generateUnitRandom(0);
-        generateUnitRandom(4);
-        generateUnitRandom(8);
+        //generateUnitRandom(0);
+        //generateUnitRandom(4);
+        //generateUnitRandom(8);
 
         solve();
 
-        printPuzzle();
+        //printPuzzle();
     }
 
     public void generateUnitRandom(int unit) { //Generates a unit (without respect to other units) and adds it to the completed puzzle.
@@ -147,6 +149,7 @@ public class Sudoku {
         int col = -1;
 
         if (isSolved()) {
+            count++;
             return true;
         }
 
@@ -167,7 +170,6 @@ public class Sudoku {
             if (checkValidity(i, row, col)) {
                 completePuzzle[row][col] = i;
                 if (solve()) {
-                    //printPuzzle();
                     return true;
                 }
                 else {
