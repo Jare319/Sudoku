@@ -28,7 +28,7 @@ public class Sudoku {
     
     private int[][] displayPuzzle = new int[9][9]; //new array to contain the generated, incomplete puzzle.
     //private int[][] completePuzzle = new int[9][9]; //new array to contain the completed puzzle which can be compared aginst when user is solving.
-    private int[][] completePuzzle = {{0,0,0,1,0,4,0,6,8},{6,0,0,3,0,0,2,1,9},{1,2,0,0,8,9,4,3,5},{4,0,0,2,0,3,0,8,1},{8,1,0,0,9,0,0,2,4},{0,0,2,0,1,8,0,7,0},{9,0,0,5,0,0,1,0,3},{2,4,0,0,3,0,0,5,0},{0,0,0,8,0,1,0,0,2}};
+    private int[][] completePuzzle = {{1,9,4,2,3,5,6,0,8},{2,7,8,6,1,9,3,4,5},{0,3,0,7,4,8,0,2,9},{3,0,0,5,0,6,4,9,1},{4,0,5,1,9,0,7,0,3},{0,8,1,0,7,3,2,0,6},{8,0,2,3,5,0,9,0,7},{0,4,9,8,0,1,5,0,2},{6,0,3,9,0,7,8,0,4}};
     public int count = 0;
 
     Sudoku() {
@@ -41,8 +41,8 @@ public class Sudoku {
         //generateUnitRandom(8);
 
         solve();
-        System.out.print(count);
-        //printPuzzle();
+        System.out.println(count);
+        printPuzzle();
     }
 
     public void generateUnitRandom(int unit) { //Generates a unit (without respect to other units) and adds it to the completed puzzle.
@@ -149,7 +149,6 @@ public class Sudoku {
         int col = -1;
 
         if (isSolved()) {
-            count++;
             return true;
         }
 
@@ -180,6 +179,39 @@ public class Sudoku {
         return false;
     }
 
+    public boolean solve(int row, int col, int exclude) {
+        if (isSolved()) {
+            return true;
+        }
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (completePuzzle[i][j] == 0) {
+                    row = i;
+                    col = j;
+                    break;
+                }
+            }
+            if (row != -1) {
+                break;
+            }
+        }
+
+        for (int i = 1; i <= 9; i++) {
+            if (checkValidity(i, row, col)) {
+                completePuzzle[row][col] = i;
+                if (solve()) {
+                    return true;
+                }
+                else {
+                    completePuzzle[row][col] = 0;
+                }
+            }
+        }
+        return false;
+        return false;
+    }
+
     public boolean isSolved() {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -191,10 +223,16 @@ public class Sudoku {
         return true;
     }
 
+    public void removeVal() {
+        int row = (int)(Math.random()*8)+1;
+        int col = (int)(Math.random()*8)+1;
+        int value = completePuzzle[row][col];
+    }
+
     public void printPuzzle() {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                System.out.print(completePuzzle[i][j] + " ");
+                System.out.print(completePuzzle[i][j] + ",");
             }
             System.out.println("");
         }
