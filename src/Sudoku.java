@@ -42,7 +42,7 @@ public class Sudoku {
         generateUnitRandom(8);
 
         solve();
-        removeValues(5);
+        removeValues(10);
         printPuzzle();
     }
 
@@ -221,6 +221,7 @@ public class Sudoku {
 
         if (!canSolve(row,col,value))  {
             completePuzzle[row][col] = 0;
+            System.out.println("remove");
         }
         else {
             removeVal();
@@ -229,7 +230,7 @@ public class Sudoku {
 
     public void removeValues(int count) {
         for (int i = count; i > 0; i--) {
-            System.out.println("remove");
+            
             removeVal();
         }
     }
