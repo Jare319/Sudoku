@@ -30,23 +30,23 @@ public class Sudoku {
     
     private int[][] displayPuzzle = new int[9][9]; //new array to contain the generated, incomplete puzzle.
     private int[][] completePuzzle = new int[9][9]; //new array to contain the completed puzzle which can be compared aginst when user is solving.
-    //private int[][] completePuzzle = {{1,9,4,2,3,5,6,0,8},{2,7,8,6,1,9,3,4,5},{0,3,0,7,4,8,0,2,9},{3,0,0,5,0,6,4,9,1},{4,0,5,1,9,0,7,0,3},{0,8,1,0,7,3,2,0,6},{8,0,2,3,5,0,9,0,7},{0,4,9,8,0,1,5,0,2},{6,0,3,9,0,7,8,0,4}};
 
     Sudoku() {
         generatePuzzle();
     }
 
     public void generatePuzzle() {
-        generateUnitRandom(0);
-        generateUnitRandom(4);
-        generateUnitRandom(8);
+        generateUnitRandom(0, completePuzzle);
+        generateUnitRandom(4, completePuzzle);
+        generateUnitRandom(8, completePuzzle);
 
-        solve();
-        removeValues(10);
-        printPuzzle();
+        solve(completePuzzle);
+        copyGrid(completePuzzle,displayPuzzle);
+        removeValues(55,displayPuzzle);
+        printPuzzle(displayPuzzle);
     }
 
-    public void generateUnitRandom(int unit) { //Generates a unit (without respect to other units) and adds it to the completed puzzle.
+    public void generateUnitRandom(int unit, int[][] grid) { //Generates a unit (without respect to other units) and adds it to the completed puzzle.
         int row = 0;
         int col = 0;
         ArrayList<Integer> values = new ArrayList<Integer>(List.of(1,2,3,4,5,6,7,8,9));
@@ -92,20 +92,20 @@ public class Sudoku {
         }
 
         for (int i = 0; i < 9; i++) {
-            completePuzzle[(i/3) + row][(i%3) + col] = values.get(i);
+            grid[(i/3) + row][(i%3) + col] = values.get(i);
         }
     }
 
-    public boolean checkValidity(int val, int row, int col) {
+    public boolean checkValidity(int val, int row, int col, int[][] grid) {
         //System.out.println(checkRow(val,row) && checkCol(val,col) && checkUnit(val,row,col));
-        return checkRow(val,row) && checkCol(val,col) && checkUnit(val,row,col);
+        return checkRow(val,row, grid) && checkCol(val,col, grid) && checkUnit(val,row,col, grid);
     }
 
-    public boolean checkRow(int value, int row) {
+    public boolean checkRow(int value, int row, int[][] grid) {
         boolean valid = false;
         int occurences = 0;
         for (int i = 0; i < 9; i++) {
-            if (value == completePuzzle[row][i]) {
+            if (value == grid[row][i]) {
                 occurences++;
             }
         }
@@ -115,11 +115,11 @@ public class Sudoku {
         return valid;
     }
 
-    public boolean checkCol(int value, int col) {
+    public boolean checkCol(int value, int col, int[][] grid) {
         boolean valid = false;
         int occurences = 0;
         for (int i = 0; i < 9; i++) {
-            if (value == completePuzzle[i][col]) {
+            if (value == grid[i][col]) {
                 occurences++;
             }
         }
@@ -129,12 +129,12 @@ public class Sudoku {
         return valid;
     }
 
-    public boolean checkUnit(int value, int row, int col) {
+    public boolean checkUnit(int value, int row, int col, int[][] grid) {
         boolean valid = false;
         int occurences = 0;
         for (int i = (row/3)*3; i < ((row/3)*3)+3;i++) {
             for (int j = (col/3)*3; j < ((col/3)*3)+3;j++) {
-                if (value == completePuzzle[i][j]) {
+                if (value == grid[i][j]) {
                     occurences++;
                 }
             }
@@ -145,17 +145,17 @@ public class Sudoku {
         return valid;
     }
 
-    public boolean solve() {
+    public boolean solve(int[][] grid) {
         int row = -1;
         int col = -1;
 
-        if (isSolved()) {
+        if (isSolved(grid)) {
             return true;
         }
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                if (completePuzzle[i][j] == 0) {
+                if (grid[i][j] == 0) {
                     row = i;
                     col = j;
                     break;
@@ -167,42 +167,38 @@ public class Sudoku {
         }
 
         for (int i = 1; i <= 9; i++) {
-            if (checkValidity(i, row, col)) {
-                completePuzzle[row][col] = i;
-                if (solve()) {
+            if (checkValidity(i, row, col, grid)) {
+                grid[row][col] = i;
+                if (solve(grid)) {
                     return true;
                 }
                 else {
-                    completePuzzle[row][col] = 0;
+                    grid[row][col] = 0;
                 }
             }
         }
         return false;
     }
 
-    public boolean canSolve(int row, int col, int exclude) {
+    public boolean canSolve(int row, int col, int exclude, int[][] grid) {
         for (int i = 1; i <= 9; i++) {
             if (i == exclude) {
                 i++;
             }
-            if (checkValidity(i, row, col)) {
-                completePuzzle[row][col] = i;
-                if (solve()) {
-                    completePuzzle[row][col] = exclude;
-                    return true;
-                }
-                else {
-                    return false;
-                }
+            if (checkValidity(i, row, col, grid)) {
+                int[][] copy = new int[9][9];
+                copyGrid(grid,copy);
+                copy[row][col] = i;
+                return solve(copy);
             }
         }
         return false;
     }
 
-    public boolean isSolved() {
+    public boolean isSolved(int[][] grid) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                if (completePuzzle[i][j] == 0) {
+                if (grid[i][j] == 0) {
                     return false;
                 }
             }
@@ -210,37 +206,62 @@ public class Sudoku {
         return true;
     }
 
-    public void removeVal() {
-        int row = (int)(Math.random()*8)+1;
-        int col = (int)(Math.random()*8)+1;
-        while (completePuzzle[row][col] == 0) {
-            row = (int)(Math.random()*8)+1;
-            col = (int)(Math.random()*8)+1;
+    public void removeVal(int[][] grid) {
+        int row = (int)(Math.random()*9);
+        int col = (int)(Math.random()*9);
+        while (grid[row][col] == 0) {
+            row = (int)(Math.random()*8);
+            col = (int)(Math.random()*8);
         }
-        int value = completePuzzle[row][col];
+        int value = grid[row][col];
 
-        if (!canSolve(row,col,value))  {
-            completePuzzle[row][col] = 0;
-            System.out.println("remove");
+        if (!canSolve(row,col,value,grid))  {
+            grid[row][col] = 0;
+            System.out.println(row + " " + col);
         }
         else {
-            removeVal();
+            removeVal(grid);
         }
     }
 
-    public void removeValues(int count) {
+    public void removeValues(int count, int[][] grid) {
         for (int i = count; i > 0; i--) {
-            
-            removeVal();
+            removeVal(grid);
         }
     }
 
-    public void printPuzzle() {
+    public void copyGrid(int[][] copyFrom,int[][] copyTo) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                System.out.print(completePuzzle[i][j] + ",");
+                copyTo[i][j] = copyFrom[i][j];
             }
-            System.out.println("");
         }
+    }
+
+    public void printPuzzle(int[][] grid) {
+        System.out.println("\n----------------------");
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (j%3 == 0) {
+                    System.out.print("|");
+                }
+                if (grid[i][j] != 0) {
+                    System.out.print(grid[i][j] + " ");
+                }
+                else {
+                    System.out.print("  ");
+                }
+                if (j == 8) {
+                    System.out.print("|");
+                }
+            }
+            if (i == 2 || i == 5) {
+                System.out.println("\n|--------------------|");
+            }
+            else{
+                System.out.println("");
+            }
+        }
+        System.out.println("----------------------");
     }
 }
