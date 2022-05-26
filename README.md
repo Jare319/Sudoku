@@ -14,4 +14,6 @@ Update: It's more consistent when trying to remove lower ammounts of values.
 
 Update: It now removes the correct number of values. Will add attempts when trying to remove so that if no more can be removed it will stop trying.
 
-Update: Able to remove 60 values so far, not consistent and will sometimes crash, which is why i need above mentioned step
+Update: Able to remove 60 values so far, not consistent and will sometimes crash, which is why I need above mentioned step.
+
+Update: 56 seems to be the largest stable ammount of values that can be removed (i.e. the hardest puzzles that I can produce right now).

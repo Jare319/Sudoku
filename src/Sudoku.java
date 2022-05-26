@@ -1,7 +1,5 @@
 import java.util.*;
 
-import javax.crypto.Cipher;
-
 public class Sudoku {
 
     /*  Each individual 3x3 is called a unit, where units are labeled 0 - 8 starting from the top left corner, and ending in the bottom right.
@@ -28,8 +26,8 @@ public class Sudoku {
     find the next unsolved index and repeat. If the current recursion thread dead-ends, it will undo the changes one at a time and try another value. 
     */
     
-    private int[][] displayPuzzle = new int[9][9]; //new array to contain the generated, incomplete puzzle.
-    private int[][] completePuzzle = new int[9][9]; //new array to contain the completed puzzle which can be compared aginst when user is solving.
+    public int[][] displayPuzzle = new int[9][9]; //new array to contain the generated, incomplete puzzle.
+    public int[][] completePuzzle = new int[9][9]; //new array to contain the completed puzzle which can be compared aginst when user is solving.
 
     Sudoku() {
         generatePuzzle();
@@ -42,8 +40,7 @@ public class Sudoku {
 
         solve(completePuzzle);
         copyGrid(completePuzzle,displayPuzzle);
-        removeValues(55,displayPuzzle);
-        printPuzzle(displayPuzzle);
+        removeValues(56,displayPuzzle);
     }
 
     public void generateUnitRandom(int unit, int[][] grid) { //Generates a unit (without respect to other units) and adds it to the completed puzzle.
@@ -217,7 +214,6 @@ public class Sudoku {
 
         if (!canSolve(row,col,value,grid))  {
             grid[row][col] = 0;
-            System.out.println(row + " " + col);
         }
         else {
             removeVal(grid);
@@ -239,11 +235,11 @@ public class Sudoku {
     }
 
     public void printPuzzle(int[][] grid) {
-        System.out.println("\n----------------------");
+        System.out.println("\n-------------------------");
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (j%3 == 0) {
-                    System.out.print("|");
+                    System.out.print("| ");
                 }
                 if (grid[i][j] != 0) {
                     System.out.print(grid[i][j] + " ");
@@ -256,12 +252,12 @@ public class Sudoku {
                 }
             }
             if (i == 2 || i == 5) {
-                System.out.println("\n|--------------------|");
+                System.out.println("\n|-----------------------|");
             }
             else{
                 System.out.println("");
             }
         }
-        System.out.println("----------------------");
+        System.out.println("-------------------------");
     }
 }
