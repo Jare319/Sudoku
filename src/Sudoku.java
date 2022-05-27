@@ -40,7 +40,7 @@ public class Sudoku {
 
         solve(completePuzzle);
         copyGrid(completePuzzle,displayPuzzle);
-        removeValues(56,displayPuzzle);
+        removeValues(40,displayPuzzle);
     }
 
     public void generateUnitRandom(int unit, int[][] grid) { //Generates a unit (without respect to other units) and adds it to the completed puzzle.
