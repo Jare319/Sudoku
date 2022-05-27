@@ -26,14 +26,16 @@ public class Sudoku {
     find the next unsolved index and repeat. If the current recursion thread dead-ends, it will undo the changes one at a time and try another value. 
     */
     
-    public static int[][] displayPuzzle = new int[9][9]; //new array to contain the generated, incomplete puzzle.
-    public static int[][] completePuzzle = new int[9][9]; //new array to contain the completed puzzle which can be compared aginst when user is solving.
+    public static int[][] displayPuzzle; //new array to contain the generated, incomplete puzzle.
+    public static int[][] completePuzzle; //new array to contain the completed puzzle which can be compared aginst when user is solving.
 
     Sudoku() {
         generatePuzzle();
     }
 
     public void generatePuzzle() {
+        displayPuzzle = new int[9][9];
+        completePuzzle = new int[9][9];
         generateUnitRandom(0, completePuzzle);
         generateUnitRandom(4, completePuzzle);
         generateUnitRandom(8, completePuzzle);
