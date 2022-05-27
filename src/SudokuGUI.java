@@ -10,7 +10,6 @@ public class SudokuGUI {
     
     SudokuGUI() {
         Sudoku s = new Sudoku();
-        s.printPuzzle(Sudoku.completePuzzle);
         JFrame f = new JFrame("Sudoku");
 
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,9 +47,8 @@ public class SudokuGUI {
             p.setBackground(Color.BLACK);
             p.setLayout(new GridLayout(3,3));
             for (int j = 0; j < 9; j++) {
-                cellArr[(i/3)*3][(j%3)*3] = new Cell((i/3)*3,(j%3)/3);
-                System.out.println(i + " " + j);
-                p.add(cellArr[(i/3)*3][(j%3)*3]);
+                cellArr[(i/3)*3+(j/3)][(j%3)+((i%3)*3)] = new Cell((i/3)*3+(j/3),(j%3)+((i%3)*3));
+                p.add(cellArr[(i/3)*3+(j/3)][(j%3)+((i%3)*3)]);
             }
             topMainPanel.add(p);
             
@@ -92,6 +90,7 @@ public class SudokuGUI {
                     else {
                         selectedCell.setForeground(Color.black);
                         selectedCell.setBackground(new Color(170, 255, 166));
+                        selectedCell.editable = false;
                     }
                 }
             }
@@ -112,6 +111,7 @@ public class SudokuGUI {
                 if (Sudoku.displayPuzzle[i][j] == 0) {
                     cellArr[i][j].setText("");
                     cellArr[i][j].setFont(new Font("Monospaced",Font.PLAIN,40));
+                    cellArr[i][j].editable = true;
                 }
                 else {
                     cellArr[i][j].setText(Integer.toString(Sudoku.displayPuzzle[i][j]));
