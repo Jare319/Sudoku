@@ -5,7 +5,7 @@ Can generate completed puzzles, still need to implement:
 - [ ] Difficulty system.
 - [ ] GUI
 - [ ] Scoring.
-- [ ] A betting difficulty system.
+- [ ] A better difficulty system.
 - [ ] Lives.
 
 Note on removing values: Amount removed seems kinda random, only ever actually achieved removing at most 18 values once when attempting to remove 20.
